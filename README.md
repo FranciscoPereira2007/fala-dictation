@@ -40,9 +40,10 @@ flowchart LR
 - An Apple development signing team to install the phone app on a real device.
   A free personal team may be used subject to Apple's provisioning restrictions.
 
-The default Mac model is Whisper large-v3 turbo. Allow several GB of free disk
-space and memory for dependencies, builds and the model. First-use preparation
-can take longer than a request's three-minute timeout; retry after it finishes.
+The default Mac model is Whisper base. Allow several GB of free disk space and
+memory for dependencies, builds and model preparation. Wait until the Mac says
+**Model ready** before sending audio: first-use Core ML compilation can take
+several minutes even when model files are already downloaded.
 
 ## Build and use
 

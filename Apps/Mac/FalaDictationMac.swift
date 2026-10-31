@@ -88,9 +88,19 @@ import Network
         status = "Preparing local model (first launch downloads the model)…"
         engine.warmUp()
         let value = DictationServer(token: token)
+        value.readiness = { engine.isReady ? "Model ready" : (engine.lastError.map { "Model error: " + $0 } ?? "Model preparing; wait before sending audio") }
         let pairedToken = token
+        Task {
+            let ready = await Task.detached { await engine.prepare() }.value
+            guard self.token == pairedToken else { return }
+            self.status = ready ? "Model ready. Listening for your phone." : "Model preparation failed: \(engine.lastError ?? "try restarting the app")"
+        }
         value.onAudio = { [weak self] samples, isActive in
             guard let self, isActive(), !self.inferenceBusy else { return nil }
+            guard engine.isReady else {
+                self.status = "Model is still preparing. Wait for ‘Model ready’ before sending audio."
+                return nil
+            }
             self.inferenceBusy = true
             defer { self.inferenceBusy = false }
             self.status = "Transcribing locally…"
@@ -113,7 +123,7 @@ import Network
             } else { self.status = result.isEmpty ? "No speech detected." : "Transcript received." }
             return result
         }
-        value.onStatus = { [weak self] status in self?.status = status }
+        value.onStatus = { [weak self] status in self?.status = engine.isReady ? "Model ready. " + status : status }
         server = value
         value.start()
     }

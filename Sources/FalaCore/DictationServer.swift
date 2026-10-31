@@ -6,6 +6,7 @@ import Network
     let token: String
     var onAudio: (([Float], @escaping () -> Bool) async -> String?)?
     var onStatus: ((String) -> Void)?
+    var readiness: (() -> String)?
     private let replay = ReplayGuard()
     private var listener: NWListener?
     private var connections: [UUID: NWConnection] = [:]
@@ -81,7 +82,10 @@ import Network
         case .fresh: break
         }
         func finish(_ body: Data) { replay.store(request.id, reply: body); send(body) }
-        if request.body == Data("P".utf8) { finish(Data("PFala Dictation".utf8)); return }
+        if request.body == Data("P".utf8) {
+            let detail = readiness.map { "\n" + $0() } ?? ""
+            finish(Data(("PFala Dictation" + detail).utf8)); return
+        }
         guard !transcribing else { finish(Data("EBusy; try again after the current dictation".utf8)); return }
         transcribing = true
         defer { transcribing = false }

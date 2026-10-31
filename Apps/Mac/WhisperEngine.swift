@@ -11,7 +11,7 @@ final class WhisperEngine: @unchecked Sendable {
     static var modelName: String {
         if let m = UserDefaults.standard.string(forKey: "falaDictation.whisperModel"), !m.isEmpty { return m }
         #if os(macOS)
-        return "openai_whisper-large-v3-v20240930_turbo_632MB"
+        return "openai_whisper-base"
         #else
         return "openai_whisper-base"
         #endif
@@ -55,6 +55,8 @@ final class WhisperEngine: @unchecked Sendable {
     func warmUp() {
         _ = loadTask()
     }
+
+    func prepare() async -> Bool { await loadTask().value != nil }
 
     private func loadTask() -> Task<WhisperKit?, Never> {
         lock.lock(); defer { lock.unlock() }

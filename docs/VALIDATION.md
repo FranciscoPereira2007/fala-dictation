@@ -12,6 +12,12 @@ Validated on 2026-10-31:
 - Independent second-model source review of networking and native lifecycle:
   findings addressed; no remaining release blockers reported by inspection.
 - Secret scan of the publication file set: passed.
+- GitHub Actions protocol tests and both application builds: passed on the
+  initial publication. Later commits run the same workflow.
+- Local runtime smoke test against the actual Mac app and Whisper base model:
+  authenticated ping, encrypted audio upload and encrypted transcript reply
+  passed. macOS-generated English speech returned
+  `Hello, this is a local dictation test.` No remote transcription API was used.
 
 The protocol integration tests use synthetic samples and a stub transcription
 callback. They do not measure Whisper accuracy or microphone behavior.

@@ -57,7 +57,7 @@ import AVFoundation
             defer { busy = false }
             do {
                 let response = try await DictationClient.send(Data("P".utf8), host: host, token: token)
-                status = response.first == 0x50 ? "Connected to your Mac." : "Unexpected reply."
+                status = response.first == 0x50 ? "Connected: " + String(decoding: response.dropFirst(), as: UTF8.self) : "Unexpected reply."
             } catch { status = error.localizedDescription }
         }
     }
