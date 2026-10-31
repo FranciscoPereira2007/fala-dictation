@@ -1,0 +1,20 @@
+name: Checks
+on: [push, pull_request]
+permissions:
+  contents: read
+jobs:
+  protocol:
+    runs-on: macos-15
+    steps:
+      - uses: actions/checkout@v4
+      - run: swift test
+  applications:
+    runs-on: macos-15
+    steps:
+      - uses: actions/checkout@v4
+      - run: brew install xcodegen
+      - run: xcodegen generate
+      - name: Build Mac app
+        run: xcodebuild -project FalaDictation.xcodeproj -scheme FalaDictationMac -destination 'platform=macOS' CODE_SIGNING_ALLOWED=NO build
+      - name: Build phone app for simulator
+        run: xcodebuild -project FalaDictation.xcodeproj -scheme FalaDictationPhone -destination 'generic/platform=iOS Simulator' CODE_SIGNING_ALLOWED=NO build

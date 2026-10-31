@@ -1,0 +1,42 @@
+name: FalaDictation
+options:
+  bundleIdPrefix: org.fala.dictation
+  deploymentTarget: {iOS: "18.0", macOS: "14.0"}
+packages:
+  WhisperKit:
+    url: https://github.com/argmaxinc/WhisperKit
+    exactVersion: 1.1.1
+settings:
+  base:
+    SWIFT_VERSION: "5.0"
+    CODE_SIGN_STYLE: Automatic
+    GENERATE_INFOPLIST_FILE: YES
+    MARKETING_VERSION: "0.1.0"
+    CURRENT_PROJECT_VERSION: "1"
+targets:
+  FalaDictationMac:
+    type: application
+    platform: macOS
+    sources: [Sources/FalaCore, Apps/Mac]
+    dependencies:
+      - package: WhisperKit
+        product: WhisperKit
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: org.fala.dictation.mac
+        PRODUCT_NAME: FalaDictationMac
+        INFOPLIST_KEY_CFBundleDisplayName: Fala Dictation
+        INFOPLIST_KEY_NSLocalNetworkUsageDescription: Receive encrypted dictation from your phone on your local network.
+  FalaDictationPhone:
+    type: application
+    platform: iOS
+    sources: [Sources/FalaCore, Apps/iOS]
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: org.fala.dictation.phone
+        PRODUCT_NAME: FalaDictationPhone
+        TARGETED_DEVICE_FAMILY: "1,2"
+        INFOPLIST_KEY_CFBundleDisplayName: Fala Dictation
+        INFOPLIST_KEY_NSMicrophoneUsageDescription: Record your voice and send it to your paired Mac for local transcription.
+        INFOPLIST_KEY_NSLocalNetworkUsageDescription: Send encrypted audio to your paired Mac on the same network.
+        INFOPLIST_KEY_UILaunchScreen_Generation: YES
